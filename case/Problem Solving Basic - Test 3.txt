@@ -1,0 +1,93 @@
+function converttime($str='') {
+        $result = "";
+if(preg_match("/AM/i", $str)){
+	$x = str_replace([' ','AM'],['',''],$str);
+    $artime = explode(':',$str);
+    $jam = intval($artime[0]);
+    $menit = intval($artime[1]);
+    $detik = intval($artime[2]);
+    if($jam > 12){
+    	$j = $jam-12;
+        if($j < 10){
+        	$j = "0".$j; 
+        }
+        
+        if($menit<10){
+        	$menit = "0".$menit;
+        }
+        $result = $j.':'.$menit.':'.$detik.'AM';
+    }
+    elseif($jam < 12)
+    {
+    	$j = $jam;
+    	if($jam < 10){
+        	$j = "0".$jam; 
+        }
+        
+        if($menit<10){
+        	$menit = "0".$menit;
+        }
+        $result = $j.':'.$menit.':'.$detik.'AM';
+    }
+    else
+    {
+    	if($menit > 00){
+        	if($menit<10){
+                $menit = "0".$menit;
+            }
+        	$result = $jam.':'.$menit.':'.$detik.'PM';
+        }
+        else
+        {
+        	if($menit<10){
+                $menit = "0".$menit;
+            }
+        	$result = $jam.':'.$menit.':'.$detik.'AM';
+        }
+    }
+}elseif(preg_match("/PM/i", $str)){
+	$x = str_replace([' ','PM'],['',''],$str);
+    $artime = explode(':',$str);
+    $jam = intval($artime[0]);
+    $menit = intval($artime[1]);
+    $detik = intval($artime[2]);
+    if($jam > 12){
+        if($menit<10){
+        	$menit = "0".$menit;
+        }
+        $result = "0".$j.':'.$menit.':'.$detik.'AM';
+    }
+    elseif($jam < 12)
+    {
+    	$j = $jam+12;
+    	if($jam < 10){
+        	$j = "0".$jam; 
+        }
+        if($menit<10){
+        	$menit = "0".$menit;
+        }
+        $result = $j.':'.$menit.':'.$detik.'AM';
+    }
+    else
+    {
+    	if($menit == 00){
+        	if($menit<10){
+                $menit = "0".$menit;
+            }
+        	$result = $jam.':'.$menit.':'.$detik.'AM';
+        }
+        else
+        {
+        	if($menit<10){
+                $menit = "0".$menit;
+            }
+        	$result = $jam.':'.$menit.':'.$detik.'PM';
+        }
+    }
+}else{
+	$result = "maaf format yang anda masukan salah!";
+};
+echo $result;
+}
+
+string('23:00:30 AM');

@@ -1,0 +1,21 @@
+function calculate($arr=[]) {
+        $x=0;
+	$y=0;
+	$z=0;
+	$artot=count($arr);
+	foreach($arr as $key => $value){
+		if($value > 0){
+	    		$x += 1;
+    		} elseif($value < 0) {
+    			$y += 1;
+	    	} else {
+    			$z += 1;
+    		}
+	};
+
+	echo $x/$artot."<br>";
+	echo $y/$artot."<br>";
+	echo $z/$artot."<br>";
+}
+
+calculate([-2,8,0,-4,7,3]);

@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/hasbi001/pegawai/issues"
   },
-  "homepage": "https://github.com/hasbi001/pegawai#readme"
+  "homepage": "https://github.com/hasbi001/pegawai#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0",
+    "sequelize": "^6.37.3"
+  }
 }

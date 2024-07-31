@@ -1,0 +1,17 @@
+module.exports = (sequelize, Sequelize) => {
+  const Sales = sequelize.define("sales", {
+    sales_id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    employeeId: {
+      type: Sequelize.INTEGER
+    },
+    sales: {
+      type: Sequelize.INTEGER
+    }
+  });
+
+  return Sales;
+};

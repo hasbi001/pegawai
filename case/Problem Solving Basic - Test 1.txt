@@ -1,0 +1,19 @@
+function maxmin($arr=[]){
+	if(!empty($arr)){
+		sort($arr);
+		$result = [];
+		foreach($arr as $key => $value){
+			unset($a[$key]);
+			$total = array_sum($arr);
+    			$result[] = $total;
+	    		$arr[]=$value;
+    			sort($arr);
+		};
+		echo min($result).' '.max($result);
+	}else
+	{
+		echo "data is empty";
+	}
+}		
+
+maxmin([2,10,3,6,8]);
