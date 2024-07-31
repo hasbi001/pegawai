@@ -1,0 +1,23 @@
+{
+  "name": "pegawai-be",
+  "version": "1.0.0",
+  "description": "backend untuk pegawai",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hasbi001/pegawai.git"
+  },
+  "keywords": [
+    "node.js",
+    "express.js"
+  ],
+  "author": "Hasbi Ali Firdaus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hasbi001/pegawai/issues"
+  },
+  "homepage": "https://github.com/hasbi001/pegawai#readme"
+}
