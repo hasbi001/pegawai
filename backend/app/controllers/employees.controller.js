@@ -1,64 +1,144 @@
+const logger = require("../helpers/writelog");
 const db = require("../models");
 const Employees = db.employees;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Employees
 exports.create = (req, res) => {
-    // Validate request
-    if (!req.body.title) {
-        res.status(400).send({
-        message: "Content can not be empty!"
-        });
-        return;
+    
+    const today = new Date();
+    const Y = today.getFullYear();
+    let m = today.getMonth() + 1; // Months start at 0!
+    let d = today.getDate();
+
+    // Create a Product
+    const data = {
+        name: req.body.name,
+        job_title: req.body.job_title,
+        salary: req.body.salary,
+        department: req.body.department,
+        joined_date: req.body.joined_date,
+        createdAt: Y+"-"+m+"-"+d,
+        updatedAt: Y+"-"+m+"-"+d,
+    };
+
+    // Save Product in the database
+    Employees.create(data)
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while creating the employee data."
+      });
+    });
+};
+
+// Retrieve all Employees from the database.
+exports.findAll = (req, res) => {
+    var condition=null;
+    
+    const name = req.body.name;
+    logger.writeToLog(name);
+    var condName = name ? { name: { [Op.like]: `%${name}%` } } : null;
+    const jobtitle = req.body.job_title;
+    var job = jobtitle ? { job_title: { [Op.like]: `%${jobtitle}%` } } : null;
+    const gaji = req.body.salary;
+    var conGaji = gaji ? { salary: { [Op.like]: `%${gaji}%` } } : null;
+    const divisi = req.body.department;
+    var conDivisi = divisi ? { department: { [Op.like]: `%${divisi}%` } } : null;
+    
+    if (condName != null || job != null) {
+        condition = {
+            [Op.and]: [
+                condName,
+                job,
+                conGaji,
+                conDivisi
+            ]
+        }
     }
 
-    // Create a Employees
-    const tutorial = {
-        title: req.body.title,
-        description: req.body.description,
-        published: req.body.published ? req.body.published : false
-    };
-
-    // Save Employees in the database
-    Employees.create(tutorial)
-        .then(data => {
-        res.send(data);
+    Employees.findAll({ where: condition
+        }).then(data => {
+            res.send(data);
         })
         .catch(err => {
-        res.status(500).send({
-            message:
-            err.message || "Some error occurred while creating the Employees."
+            res.status(500).send({
+                message:
+                err.message || "Some error occurred while retrieving employees."
+            });
         });
-        });
-    };
 };
 
-// Retrieve all Tutorials from the database.
-exports.findAll = (req, res) => {
-  
-};
-
-// Find a single Tutorial with an id
+// Find a single Employee with an id
 exports.findOne = (req, res) => {
-  
+    const id = req.params.id;
+
+    Employees.findByPk(id)
+      .then(data => {
+        if (data) {
+          res.send(data);
+        } else {
+          res.status(404).send({
+            message: `Cannot find employee with id=${id}.`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Error retrieving employee with id=" + id
+        });
+      });
 };
 
-// Update a Tutorial by the id in the request
+// Update a Employee by the id in the request
 exports.update = (req, res) => {
-  
+    const id = req.params.id;
+
+    Employees.update(req.body, {
+        where: { id: id }
+    })
+    .then(num => {
+    if (num == 1) {
+        res.send({
+            message: "Employee was updated successfully."
+        });
+    } else {
+        res.send({
+            message: `Cannot update employee with id=${id}. Maybe employee was not found or req.body is empty!`
+        });
+    }
+    })
+    .catch(err => {
+        res.status(500).send({
+            message: "Error updating employee with id=" + id
+        });
+    });
 };
 
-// Delete a Tutorial with the specified id in the request
+// Delete a Employee with the specified id in the request
 exports.delete = (req, res) => {
-  
-};
+    const id = req.params.id;
 
-// Delete all Tutorials from the database.
-exports.deleteAll = (req, res) => {
-  
-};
-
-// Find all published Tutorials
-exports.findAllPublished = (req, res) => {
-  
+    Employees.destroy({
+      where: { id: id }
+    })
+      .then(num => {
+        if (num == 1) {
+          res.send({
+            message: "employee was deleted successfully!"
+          });
+        } else {
+          res.send({
+            message: `Cannot delete employee with id=${id}. Maybe employee was not found!`
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message: "Could not delete employee with id=" + id
+        });
+      });
 };

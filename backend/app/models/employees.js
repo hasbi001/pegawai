@@ -11,6 +11,16 @@ module.exports = (sequelize, Sequelize) => {
       job_title: {
         type: Sequelize.STRING
       },
+      salary: {
+        type: Sequelize.STRING
+      },
+      department: {
+        type: Sequelize.STRING
+      },
+      joined_date: {
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
+      },
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.NOW,
