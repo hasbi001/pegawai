@@ -8,12 +8,44 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
 import { useFormState, useFormStatus } from 'react-dom';
+// import { signIn } from "../service/auth";
+import { useState, FormEvent } from 'react';
+import axios from "axios";
 
 
 export default function LoginForm() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    async function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        const url = 'http://localhost:8080/api/auth/signin';
+        const headers = {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+        };
+        const formData = {
+          username: username,
+          password: password
+        }
+        
+        try {
+          const response = await axios.post(url, formData, { headers, withCredentials: true });
+          console.log(response.data);
+          // Tambahkan logika untuk menangani respons sukses di sini
+        } catch (error) {
+          if (axios.isAxiosError(error)) {
+            console.error('Error saat login:', error.message);
+            // Tambahkan logika untuk menampilkan pesan error ke pengguna
+          } else {
+            console.error('Error tidak dikenal:', error);
+          }
+        }
+      }
   
   return (
-    <form  className="space-y-3">
+    <form  className="space-y-3" onSubmit={onSubmit}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please log in to continue.
@@ -33,6 +65,8 @@ export default function LoginForm() {
                 type="text"
                 name="username"
                 placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
@@ -53,13 +87,15 @@ export default function LoginForm() {
                 name="password"
                 placeholder="Enter password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 minLength={6}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
-        <LoginButton />
+        <LoginButton  />
         
       </div>
     </form>
@@ -70,7 +106,7 @@ function LoginButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
+    <Button className="mt-4 w-full" >
       Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );

@@ -5,9 +5,12 @@ const authController = require("../controllers/auth.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*"); // Izinkan semua origin
+        res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
         res.header(
         "Access-Control-Allow-Headers",
-        "Origin, Content-Type, Accept"
+        "Origin, Content-Type, Accept",
+        'Referrer-Policy', 'no-referrer-when-downgrade'
         );
         next();
     });

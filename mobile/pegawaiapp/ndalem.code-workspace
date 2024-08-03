@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../../../ndalem/ndalem"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../nextjs-dashboard-main"
+		}
+	],
+	"settings": {
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}
