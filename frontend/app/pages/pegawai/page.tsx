@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import axios from "axios";
 import Link from 'next/link';
-import { PencilIcon, UserPlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilIcon, UserPlusIcon, TrashIcon, ReceiptPercentIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 interface Employee {
   employee_id: number;
@@ -91,10 +91,16 @@ export default function Page() {
                     {employee.joined_date}
                   </td>
                   
-                  <td className="whitespace-nowrap py-3 pl-6 pr-3">
+                  <td className="whitespace-nowrap py-4 pl-6 pr-4">
                     <div className="flex justify-end gap-3">
+                        <Link href={`/pages/sales/create/${employee.employee_id}`} className="rounded-md border p-2 hover:bg-gray-100">
+                            <ReceiptPercentIcon className="w-5" />
+                        </Link>
                         <Link href={`/pages/pegawai/${employee.employee_id}/edit`} className="rounded-md border p-2 hover:bg-gray-100">
                             <PencilIcon className="w-5" />
+                        </Link>
+                        <Link href={`/pages/pegawai/view/${employee.employee_id}`} className="rounded-md border p-2 hover:bg-gray-100">
+                            <EyeIcon className="w-5" />
                         </Link>
                         <button className="rounded-md border p-2 hover:bg-gray-100" onClick={() => deleteKlik(employee.employee_id.toString())}>
                             <span className="sr-only">Delete</span>

@@ -1,3 +1,4 @@
+const { FOREIGNKEYS } = require("sequelize/lib/query-types");
 const dbConfig = require("../config/database.js");
 
 const Sequelize = require("sequelize");

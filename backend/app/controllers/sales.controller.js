@@ -1,6 +1,8 @@
+const { Model } = require("sequelize");
 const logger = require("../helpers/writelog");
 const db = require("../models");
 const Sales = db.sales;
+const Employees = db.employees;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Sales
@@ -34,33 +36,51 @@ exports.create = (req, res) => {
 
 // Retrieve all Sales from the database.
 exports.findAll = (req, res) => {
-    var condition=null;
+    // var condition=null;
     
-    const employeeId = req.body.employeeId;
-    logger.writeToLog(employeeId);
-    var condemployeeId = employeeId ? { employeeId: { [Op.eq]: employeeId } } : null;
-    const sales = req.body.sales;
-    var conSales = sales ? { sales: { [Op.eq]: sales } } : null;
+    // const employeeId = req.body.employeeId;
+    // logger.writeToLog(employeeId);
+    // var condemployeeId = employeeId ? { employeeId: { [Op.eq]: employeeId } } : null;
+    // const sales = req.body.sales;
+    // var conSales = sales ? { sales: { [Op.eq]: sales } } : null;
     
-    if (employeeId != null || job != null) {
-        condition = {
-            [Op.and]: [
-                condemployeeId,
-                conSales
-            ]
-        }
-    }
+    // if (employeeId != null || sales != null) {
+    //     condition = {
+    //         [Op.and]: [
+    //             condemployeeId,
+    //             conSales
+    //         ]
+    //     }
+    // }
 
-    Sales.findAll({ where: condition
-        }).then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message:
-                err.message || "Some error occurred while retrieving sales."
-            });
-        });
+    // Sales.findAll({ 
+    //       where: condition,
+    //       include:[{
+    //         model: Employees,
+    //         required:true
+    //       }]
+    //     }).then(data => {
+    //         res.send(data);
+    //     })
+    //     .catch(err => {
+    //         res.status(500).send({
+    //             message:
+    //             err.message || "Some error occurred while retrieving sales."
+    //         });
+    //     });
+
+    db.sequelize.query(
+      "SELECT s.*,e.name FROM sales s INNER JOIN employees e ON s.employeeId=e.employee_id",
+      { type: db.sequelize.QueryTypes.SELECT }
+    )
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message: err.message || "Terjadi kesalahan saat mengambil data penjualan."
+      });
+    });
 };
 
 // Find a single Sales with an id
@@ -89,7 +109,7 @@ exports.update = (req, res) => {
     const id = req.params.id;
 
     Sales.update(req.body, {
-        where: { id: id }
+        where: { sales_id: id }
     })
     .then(num => {
     if (num == 1) {
@@ -114,7 +134,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
 
     Sales.destroy({
-      where: { id: id }
+      where: { sales_id: id }
     })
       .then(num => {
         if (num == 1) {

@@ -52,7 +52,7 @@ export default function Form() {
             console.error('Error tidak dikenal:', error);
           }
         }
-      }
+    }
   return (
     <form onSubmit={onSubmit}>
         <h1 className="text-2xl">Pegawai Form Create</h1>
