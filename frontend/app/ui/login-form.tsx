@@ -8,12 +8,12 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './button';
 import { useFormState, useFormStatus } from 'react-dom';
-// import { signIn } from "../service/auth";
 import { useState, FormEvent } from 'react';
 import axios from "axios";
-
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+    const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -22,18 +22,18 @@ export default function LoginForm() {
         const url = 'http://localhost:8080/api/auth/signin';
         const headers = {
           'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Content-Type, Authorization'
         };
         const formData = {
           username: username,
           password: password
         }
-        
+        console.log(formData);
         try {
           const response = await axios.post(url, formData, { headers, withCredentials: true });
           console.log(response.data);
           // Tambahkan logika untuk menangani respons sukses di sini
+          // revalidatePath('/pages/pegawai');
+          router.push('/pages/pegawai');
         } catch (error) {
           if (axios.isAxiosError(error)) {
             console.error('Error saat login:', error.message);

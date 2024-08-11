@@ -4,11 +4,19 @@ const cookieSession = require("cookie-session");
 
 const app = express();
 
+const allowOrigin = ['http://localhost:3001','http://localhost:3000','http://localhost:8080'];
 const corsOptions = {
-  origin: '*', // Replace with your allowed origin
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  allowedHeaders: ['Content-Type', 'Authorization', 'Referer'],
+  origin: (origin, callback) => {
+    if (allowOrigin.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }, // Replace with your allowed origin
+  methods: 'GET, POST, PUT, DELETE, OPTIONS',
+  allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization', 'Access-Control-Allow-Origin'],
   credentials: true,
+  preflightContinue: false,
   optionsSuccessStatus: 204
 };
 
@@ -38,6 +46,7 @@ db.sequelize.sync()
     console.log("Failed to sync db: " + err.message);
   });
 
+app.options('*', cors(corsOptions)); 
 // simple route
 require('./app/routes/api.route')(app);
 

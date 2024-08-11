@@ -98,7 +98,7 @@ exports.update = (req, res) => {
     const id = req.params.id;
 
     Employees.update(req.body, {
-        where: { id: id }
+        where: { employee_id: id }
     })
     .then(num => {
     if (num == 1) {
@@ -123,7 +123,7 @@ exports.delete = (req, res) => {
     const id = req.params.id;
 
     Employees.destroy({
-      where: { id: id }
+      where: { employee_id: id }
     })
       .then(num => {
         if (num == 1) {
@@ -141,4 +141,50 @@ exports.delete = (req, res) => {
           message: "Could not delete employee with id=" + id
         });
       });
+};
+
+
+exports.datatables = async (req, res) => {
+  var condition=null;
+  
+  const search = req.body.search['value'];
+  const start = req.body.start;
+  const length = req.body.length;
+  const draw = req.body.draw;
+  var kolom = ['name', 'job_title', 'salary', 'department'];
+  
+  var condName = { name: { [Op.like]: `%${search}%` } } ;
+  var job = { job_title: { [Op.like]: `%${search}%` } };
+  var conGaji = { salary: { [Op.like]: `%${search}%` } };
+  var conDivisi = { department: { [Op.like]: `%${search}%` } };
+  
+  if (search != '') {
+      condition = {
+          [Op.or]: [
+              condName,
+              job,
+              conGaji,
+              conDivisi
+          ]
+      }
+  }
+
+  const totalRecords = await Employees.count();
+  const filteredRecords = await Employees.count({ where: condition });
+
+  const data = await Employees.findAll({ 
+    where: condition,
+    order: [ 
+      [ kolom[req.body.order[0]['column']],req.body.order[0]['dir'] ] 
+    ], 
+    offset:parseInt(start), 
+    limit:parseInt(length) 
+  });
+
+  res.send({
+    draw: parseInt(draw),
+    recordsTotal: totalRecords,
+    recordsFiltered: filteredRecords,
+    data: data
+  });
 };
