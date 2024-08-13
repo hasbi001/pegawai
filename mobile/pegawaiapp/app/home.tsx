@@ -1,102 +1,134 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View ,Text, Button  } from 'react-native';
+import { TabView, TabBar, SceneMap, TabBarProps, Route } from 'react-native-tab-view';
+import axios from 'axios';
+import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { useNavigation } from '@react-navigation/native';
 
-import { Collapsible } from '@/components/Collapsible';
-import { ExternalLink } from '@/components/ExternalLink';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-
-export default function TabTwoScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText> library
-          to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
-    </ParallaxScrollView>
-  );
+interface Employee {
+  name: string;
+  job_title: string;
+  salary: number;
+  department: string;
+  joined_date: string;
+}
+interface Sales {
+  name: string;
+  sales: string;
 }
 
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
+const navigation = useNavigation();
+const dataPegawaiTable: Array<Array<string | number | JSX.Element>> = []; // Menentukan tipe data untuk dataPegawaiTable
+const dataSalesTable: Array<Array<string | number>> = []; // Menentukan tipe data untuk dataPegawaiTable
+const deletePegawai = async (id: string) => {
+  const url = 'http://localhost:8080/api/employees/delete/'+id;
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const formData = {};
+    axios.delete(url, { headers, withCredentials: true })
+    .then(response => {
+        const data = response.data;
+        console.log(data);
+    });
+};
+
+const deletesales = async (id: string) => {
+  const url = 'http://localhost:8080/api/sales/delete/'+id;
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const formData = {};
+    axios.delete(url, { headers, withCredentials: true })
+    .then(response => {
+        const data = response.data;
+        console.log(data);
+    });
+};
+useEffect(() => {
+    const url = 'http://localhost:8080/api/employees/list';
+    const headers = {
+      'Content-Type': 'application/json',
+    };
+    const formData = {};
+    axios.post(url, formData, { headers, withCredentials: true })
+    .then(response => {
+        const data = response.data;
+        data?.map((employee: Employee) => {
+          const empId = employee.employee_id;
+          const button = <Button title='edit' onPress={() => navigation.navigate('edit_pegawai', { empId })} /> <Button title='delete' onPress={() => deletePegawai(empId)} />;
+            dataPegawaiTable.push([
+              employee.name, 
+              employee.job_title, 
+              employee.salary, 
+              employee.department, 
+              employee.joined_date,
+              // Ubah tipe data untuk menampung elemen React
+              button
+            ]); // Menambahkan JSX.Element ke tipe data
+        });
+    });
+
+    axios.post('http://localhost:8080/api/sales/list', formData, { headers, withCredentials: true })
+    .then(response => {
+        const data = response.data;
+        data?.map((sales: Sales) => {
+          const saleId = sales.sales_id;
+          const button = <Button title='edit' onPress={() => navigation.navigate('edit_sales', { saleId })} /> <Button title='delete' onPress={() => deletesales(saleId)} />;
+            dataSalesTable.push([sales.name, sales.sales, button ]);
+        });
+    });
+}, []);
+
+const headPegawaiTable: Array<string> = ['Name', 'Jabatan', 'Salary', 'Department', 'Joined Date', 'Action']; // Menentukan tipe data untuk headPegawaiTable
+const Pegawai = () => (
+    <View style={{ flex: 1, backgroundColor: '#ff69b4' }}>
+        <Button title='Add' onPress={() => navigation.navigate('create_pegawai' as never)} />
+        <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+            <Row data={headPegawaiTable} style={{ height: 40, backgroundColor: '#f1f8ff' }} />
+            <Rows data={dataPegawaiTable} />
+        </Table>
+    </View>
+);
+
+const headSalesTable = ['Name', 'Sales','Action'];
+const Sales = () => (
+    <View style={{ flex: 1, backgroundColor: '#ff69b4' }}>
+        <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+            <Row data={headSalesTable} style={{ height: 40, backgroundColor: '#f1f8ff' }} />
+            <Rows data={dataSalesTable} />
+        </Table>
+    </View>
+);
+
+const renderScene = SceneMap({
+    first: Pegawai,
+    second: Sales,
 });
+
+const renderTabBar = (props: TabBarProps<Route>) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: '#fff' }}
+      style={{ backgroundColor: '#333' }}
+    />
+);
+
+const App = () => {
+    const [index, setIndex] = React.useState(0);
+    const [routes] = React.useState([
+      { key: 'home', title: 'Home' },
+      { key: 'power', title: 'Power' },
+    ]);
+  
+    return (
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        renderTabBar={renderTabBar}
+        onIndexChange={setIndex}
+      />
+    );
+  };
+  
+  export default App;
